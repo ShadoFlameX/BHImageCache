@@ -42,22 +42,38 @@
 }
 
 - (IBAction)downloadImage:(id)sender
-{    
-    NSURL *url = [NSURL URLWithString:@"https://www.google.com/images/srpr/logo3w.png"];
+{
+    CGFloat duration = (self.cacheImageView.image || self.downloadImageView.image) ? 0.35f : 0.0f;
     
-    self.cacheImageView.image = [[BHImageCache sharedCache] imageWithURL:url operationQueue:[NSOperationQueue mainQueue] completionBlock:^(UIImage *image, NSError *error) {
-        if (error) {
-            NSLog(@"ERROR: %@", error);
-            return;
-        }
-        self.downloadImageView.image = image;
+    [UIView animateWithDuration:duration animations:^{
+        self.cacheImageView.alpha = 0.0f;
+        self.downloadImageView.alpha = 0.0f;
+        
+    } completion:^(BOOL finished) {
+        self.cacheImageView.image = nil;
+        self.cacheImageView.alpha = 1.0f;
+        
+        self.downloadImageView.image = nil;
+        self.downloadImageView.alpha = 1.0f;
+        
+        NSURL *url = [NSURL URLWithString:@"https://www.google.com/images/srpr/logo3w.png"];
+        
+        self.cacheImageView.image = [[BHImageCache sharedCache] imageWithURL:url operationQueue:[NSOperationQueue mainQueue] completionBlock:^(UIImage *image, NSError *error) {
+            if (error) {
+                NSLog(@"ERROR: %@", error);
+                return;
+            }
+            self.downloadImageView.image = image;
+        }];
     }];
 }
 
-- (IBAction)clearImages:(id)sender
+- (IBAction)clearCache:(id)sender
 {
     self.cacheImageView.image = nil;
     self.downloadImageView.image = nil;
+    
+    [[BHImageCache sharedCache] clearCache];
 }
 
 @end

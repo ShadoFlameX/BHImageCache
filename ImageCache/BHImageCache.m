@@ -53,24 +53,12 @@ static NSDateFormatter *_expiresDateFormatter = nil;
     self = [super init];
     if (self) {
         fileWriteQueue = dispatch_queue_create("com.skeuo.imagecache.filewritequeue", NULL);
-
-        self.imageCacheInfo = [NSMutableDictionary dictionaryWithContentsOfURL:[self cacheInfoFileURL]];
-        if (!self.imageCacheInfo) self.imageCacheInfo = [NSMutableDictionary dictionary];
                 
-        NSURL *folderURL = [self cacheImagesFolderURL];
-        NSError *error = nil;
-        [folderURL checkResourceIsReachableAndReturnError:&error];
-        if (error) {
-            NSError *dirError = nil;
-            BOOL success = [[NSFileManager defaultManager] createDirectoryAtURL:folderURL withIntermediateDirectories:NO attributes:nil error:&dirError];
-            NSAssert(success, @"Could not create cache fodler",dirError);
-        }
-        
-        NSLog(@"Cache folder: %@",folderURL);
-        
         // Sat, 26 Jan 2013 20:29:07 GMT
         _expiresDateFormatter = [[NSDateFormatter alloc] init];
         _expiresDateFormatter.dateFormat = @"EEE', 'dd' 'MMM' 'yyyy' 'HH':'mm':'ss' 'zzz";
+        
+        [self setup];
     }
     
     return self;
@@ -107,8 +95,8 @@ static NSDateFormatter *_expiresDateFormatter = nil;
             if (interval < 0) {
                 // do not use the cache if the image has expired
                 shouldUseCache = NO;
-            } else if (interval < 60 * 60 * 24 * 90) {
-                // Only use the cache if the exiration date is reasonable (< 90 days)
+            } else if (interval < 60 * 60 * 24 * 365) {
+                // Only use the cache if the expiration date is reasonable
                 shouldReload = NO;
             }
         }
@@ -194,6 +182,20 @@ static NSDateFormatter *_expiresDateFormatter = nil;
     return cachedImage;
 }
 
+- (BOOL)clearCache
+{
+    BOOL success = YES;
+    if ([[self cacheImagesFolderURL] checkResourceIsReachableAndReturnError:nil]) {
+        NSError *error = nil;
+        success = [[NSFileManager defaultManager] removeItemAtURL:[self cacheImagesFolderURL] error:&error];
+        NSAssert(success, @"Could Not Remove Cache: %@",error);
+    }
+    
+    [self setup];
+    
+    return success;
+}
+
 
 #pragma mark - Private
 
@@ -212,6 +214,21 @@ static NSDateFormatter *_expiresDateFormatter = nil;
     NSURL *folderURL = [URLs[0] URLByAppendingPathComponent:ImageCacheFolder];
     
     return folderURL;
+}
+
+- (void)setup
+{
+    self.imageCacheInfo = [NSMutableDictionary dictionaryWithContentsOfURL:[self cacheInfoFileURL]];
+    if (!self.imageCacheInfo) self.imageCacheInfo = [NSMutableDictionary dictionary];
+    
+    NSURL *folderURL = [self cacheImagesFolderURL];
+    NSError *error = nil;
+    [folderURL checkResourceIsReachableAndReturnError:&error];
+    if (error) {
+        NSError *dirError = nil;
+        BOOL success = [[NSFileManager defaultManager] createDirectoryAtURL:folderURL withIntermediateDirectories:NO attributes:nil error:&dirError];
+        NSAssert(success, @"Could not create cache fodler",dirError);
+    }
 }
 
 + (NSString *)UUID

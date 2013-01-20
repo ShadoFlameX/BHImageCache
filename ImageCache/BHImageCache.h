@@ -14,4 +14,6 @@
 
 - (UIImage *)imageWithURL:(NSURL *)imageURL operationQueue:(NSOperationQueue *)queue completionBlock:(void (^)(UIImage *image, NSError *error))completionBlock;
 
+- (BOOL)clearCache;
+
 @end
