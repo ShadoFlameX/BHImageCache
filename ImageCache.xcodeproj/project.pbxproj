@@ -17,11 +17,6 @@
 		0D78FF6616ABD429001EB406 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D78FF6516ABD429001EB406 /* Default.png */; };
 		0D78FF6816ABD429001EB406 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D78FF6716ABD429001EB406 /* Default@2x.png */; };
 		0D78FF6A16ABD429001EB406 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D78FF6916ABD429001EB406 /* Default-568h@2x.png */; };
-		0D78FF6D16ABD429001EB406 /* ImageCache.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0D78FF6B16ABD429001EB406 /* ImageCache.xcdatamodeld */; };
-		0D78FF7016ABD429001EB406 /* BHMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D78FF6F16ABD429001EB406 /* BHMasterViewController.m */; };
-		0D78FF7316ABD429001EB406 /* BHDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D78FF7216ABD429001EB406 /* BHDetailViewController.m */; };
-		0D78FF7616ABD429001EB406 /* BHMasterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78FF7416ABD429001EB406 /* BHMasterViewController.xib */; };
-		0D78FF7916ABD42A001EB406 /* BHDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78FF7716ABD42A001EB406 /* BHDetailViewController.xib */; };
 		0D78FF8216ABD45F001EB406 /* BHImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D78FF8116ABD45F001EB406 /* BHImageCache.m */; };
 		0D78FFA416ABEE76001EB406 /* BHTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D78FFA216ABEE76001EB406 /* BHTestViewController.m */; };
 		0D78FFA516ABEE76001EB406 /* BHTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78FFA316ABEE76001EB406 /* BHTestViewController.xib */; };
@@ -42,13 +37,6 @@
 		0D78FF6516ABD429001EB406 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		0D78FF6716ABD429001EB406 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		0D78FF6916ABD429001EB406 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		0D78FF6C16ABD429001EB406 /* ImageCache.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ImageCache.xcdatamodel; sourceTree = "<group>"; };
-		0D78FF6E16ABD429001EB406 /* BHMasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BHMasterViewController.h; sourceTree = "<group>"; };
-		0D78FF6F16ABD429001EB406 /* BHMasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BHMasterViewController.m; sourceTree = "<group>"; };
-		0D78FF7116ABD429001EB406 /* BHDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BHDetailViewController.h; sourceTree = "<group>"; };
-		0D78FF7216ABD429001EB406 /* BHDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BHDetailViewController.m; sourceTree = "<group>"; };
-		0D78FF7516ABD429001EB406 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/BHMasterViewController.xib; sourceTree = "<group>"; };
-		0D78FF7816ABD42A001EB406 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/BHDetailViewController.xib; sourceTree = "<group>"; };
 		0D78FF8016ABD45F001EB406 /* BHImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BHImageCache.h; sourceTree = "<group>"; };
 		0D78FF8116ABD45F001EB406 /* BHImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BHImageCache.m; sourceTree = "<group>"; };
 		0D78FFA116ABEE76001EB406 /* BHTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BHTestViewController.h; sourceTree = "<group>"; };
@@ -108,13 +96,6 @@
 				0D78FFA116ABEE76001EB406 /* BHTestViewController.h */,
 				0D78FFA216ABEE76001EB406 /* BHTestViewController.m */,
 				0D78FFA316ABEE76001EB406 /* BHTestViewController.xib */,
-				0D78FF6E16ABD429001EB406 /* BHMasterViewController.h */,
-				0D78FF6F16ABD429001EB406 /* BHMasterViewController.m */,
-				0D78FF7116ABD429001EB406 /* BHDetailViewController.h */,
-				0D78FF7216ABD429001EB406 /* BHDetailViewController.m */,
-				0D78FF7416ABD429001EB406 /* BHMasterViewController.xib */,
-				0D78FF7716ABD42A001EB406 /* BHDetailViewController.xib */,
-				0D78FF6B16ABD429001EB406 /* ImageCache.xcdatamodeld */,
 				0D78FF5A16ABD429001EB406 /* Supporting Files */,
 			);
 			path = ImageCache;
@@ -199,8 +180,6 @@
 				0D78FF6616ABD429001EB406 /* Default.png in Resources */,
 				0D78FF6816ABD429001EB406 /* Default@2x.png in Resources */,
 				0D78FF6A16ABD429001EB406 /* Default-568h@2x.png in Resources */,
-				0D78FF7616ABD429001EB406 /* BHMasterViewController.xib in Resources */,
-				0D78FF7916ABD42A001EB406 /* BHDetailViewController.xib in Resources */,
 				0D78FFA516ABEE76001EB406 /* BHTestViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -214,9 +193,6 @@
 			files = (
 				0D78FF6016ABD429001EB406 /* main.m in Sources */,
 				0D78FF6416ABD429001EB406 /* BHAppDelegate.m in Sources */,
-				0D78FF6D16ABD429001EB406 /* ImageCache.xcdatamodeld in Sources */,
-				0D78FF7016ABD429001EB406 /* BHMasterViewController.m in Sources */,
-				0D78FF7316ABD429001EB406 /* BHDetailViewController.m in Sources */,
 				0D78FF8216ABD45F001EB406 /* BHImageCache.m in Sources */,
 				0D78FFA416ABEE76001EB406 /* BHTestViewController.m in Sources */,
 			);
@@ -231,22 +207,6 @@
 				0D78FF5D16ABD429001EB406 /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		0D78FF7416ABD429001EB406 /* BHMasterViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0D78FF7516ABD429001EB406 /* en */,
-			);
-			name = BHMasterViewController.xib;
-			sourceTree = "<group>";
-		};
-		0D78FF7716ABD42A001EB406 /* BHDetailViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0D78FF7816ABD42A001EB406 /* en */,
-			);
-			name = BHDetailViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -343,21 +303,9 @@
 				0D78FF7E16ABD42A001EB406 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		0D78FF6B16ABD429001EB406 /* ImageCache.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				0D78FF6C16ABD429001EB406 /* ImageCache.xcdatamodel */,
-			);
-			currentVersion = 0D78FF6C16ABD429001EB406 /* ImageCache.xcdatamodel */;
-			path = ImageCache.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 0D78FF4416ABD429001EB406 /* Project object */;
 }
