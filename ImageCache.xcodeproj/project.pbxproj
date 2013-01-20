@@ -22,6 +22,9 @@
 		0D78FF7316ABD429001EB406 /* BHDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D78FF7216ABD429001EB406 /* BHDetailViewController.m */; };
 		0D78FF7616ABD429001EB406 /* BHMasterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78FF7416ABD429001EB406 /* BHMasterViewController.xib */; };
 		0D78FF7916ABD42A001EB406 /* BHDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78FF7716ABD42A001EB406 /* BHDetailViewController.xib */; };
+		0D78FF8216ABD45F001EB406 /* BHImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D78FF8116ABD45F001EB406 /* BHImageCache.m */; };
+		0D78FFA416ABEE76001EB406 /* BHTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D78FFA216ABEE76001EB406 /* BHTestViewController.m */; };
+		0D78FFA516ABEE76001EB406 /* BHTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78FFA316ABEE76001EB406 /* BHTestViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +49,11 @@
 		0D78FF7216ABD429001EB406 /* BHDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BHDetailViewController.m; sourceTree = "<group>"; };
 		0D78FF7516ABD429001EB406 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/BHMasterViewController.xib; sourceTree = "<group>"; };
 		0D78FF7816ABD42A001EB406 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/BHDetailViewController.xib; sourceTree = "<group>"; };
+		0D78FF8016ABD45F001EB406 /* BHImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BHImageCache.h; sourceTree = "<group>"; };
+		0D78FF8116ABD45F001EB406 /* BHImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BHImageCache.m; sourceTree = "<group>"; };
+		0D78FFA116ABEE76001EB406 /* BHTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BHTestViewController.h; sourceTree = "<group>"; };
+		0D78FFA216ABEE76001EB406 /* BHTestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BHTestViewController.m; sourceTree = "<group>"; };
+		0D78FFA316ABEE76001EB406 /* BHTestViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BHTestViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,8 +102,12 @@
 		0D78FF5916ABD429001EB406 /* ImageCache */ = {
 			isa = PBXGroup;
 			children = (
+				0D78FF7F16ABD442001EB406 /* ImageCache */,
 				0D78FF6216ABD429001EB406 /* BHAppDelegate.h */,
 				0D78FF6316ABD429001EB406 /* BHAppDelegate.m */,
+				0D78FFA116ABEE76001EB406 /* BHTestViewController.h */,
+				0D78FFA216ABEE76001EB406 /* BHTestViewController.m */,
+				0D78FFA316ABEE76001EB406 /* BHTestViewController.xib */,
 				0D78FF6E16ABD429001EB406 /* BHMasterViewController.h */,
 				0D78FF6F16ABD429001EB406 /* BHMasterViewController.m */,
 				0D78FF7116ABD429001EB406 /* BHDetailViewController.h */,
@@ -120,6 +132,15 @@
 				0D78FF6916ABD429001EB406 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0D78FF7F16ABD442001EB406 /* ImageCache */ = {
+			isa = PBXGroup;
+			children = (
+				0D78FF8016ABD45F001EB406 /* BHImageCache.h */,
+				0D78FF8116ABD45F001EB406 /* BHImageCache.m */,
+			);
+			name = ImageCache;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -180,6 +201,7 @@
 				0D78FF6A16ABD429001EB406 /* Default-568h@2x.png in Resources */,
 				0D78FF7616ABD429001EB406 /* BHMasterViewController.xib in Resources */,
 				0D78FF7916ABD42A001EB406 /* BHDetailViewController.xib in Resources */,
+				0D78FFA516ABEE76001EB406 /* BHTestViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,6 +217,8 @@
 				0D78FF6D16ABD429001EB406 /* ImageCache.xcdatamodeld in Sources */,
 				0D78FF7016ABD429001EB406 /* BHMasterViewController.m in Sources */,
 				0D78FF7316ABD429001EB406 /* BHDetailViewController.m in Sources */,
+				0D78FF8216ABD45F001EB406 /* BHImageCache.m in Sources */,
+				0D78FFA416ABEE76001EB406 /* BHTestViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

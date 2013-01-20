@@ -8,7 +8,7 @@
 
 #import "BHAppDelegate.h"
 
-#import "BHMasterViewController.h"
+#import "BHTestViewController.h"
 
 @implementation BHAppDelegate
 
@@ -21,9 +21,8 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
 
-    BHMasterViewController *masterViewController = [[BHMasterViewController alloc] initWithNibName:@"BHMasterViewController" bundle:nil];
+    BHTestViewController *masterViewController = [[BHTestViewController alloc] initWithNibName:@"BHTestViewController" bundle:nil];
     self.navigationController = [[UINavigationController alloc] initWithRootViewController:masterViewController];
-    masterViewController.managedObjectContext = self.managedObjectContext;
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
     return YES;
