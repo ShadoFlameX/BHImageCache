@@ -10,7 +10,12 @@
 
 static NSString * const ImageCacheFolder = @"ImageCache";
 static NSString * const ImageCacheInfoFilename = @"cacheInfo.plist";
-static NSArray *SupportedFileTypes = nil;
+
+static NSString * const ImageCacheItemFilenameKey = @"filename";
+static NSString * const ImageCacheItemExpiresKey = @"expires";
+
+static NSArray *_supportedFileTypes = nil;
+static NSDateFormatter *_expiresDateFormatter = nil;
 
 @interface BHImageCache () {
     dispatch_queue_t fileWriteQueue;
@@ -26,7 +31,7 @@ static NSArray *SupportedFileTypes = nil;
 
 + (void)initialize
 {
-    SupportedFileTypes = @[@"jpg", @"png"];
+    _supportedFileTypes = @[@"jpg", @"png"];
 }
 
 + (BHImageCache *)sharedCache
@@ -62,6 +67,10 @@ static NSArray *SupportedFileTypes = nil;
         }
         
         NSLog(@"Cache folder: %@",folderURL);
+        
+        // Sat, 26 Jan 2013 20:29:07 GMT
+        _expiresDateFormatter = [[NSDateFormatter alloc] init];
+        _expiresDateFormatter.dateFormat = @"EEE', 'dd' 'MMM' 'yyyy' 'HH':'mm':'ss' 'zzz";
     }
     
     return self;
@@ -75,7 +84,7 @@ static NSArray *SupportedFileTypes = nil;
     NSString *URLString = [imageURL absoluteString];
     
     NSString *fileType = [[URLString pathExtension] lowercaseString];
-    if (![SupportedFileTypes containsObject:fileType]) {
+    if (![_supportedFileTypes containsObject:fileType]) {
         NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:^{
             NSError *error = [NSError errorWithDomain:@"BHImageCache" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Invalid image file type."}];
             completionBlock(nil, error);
@@ -87,14 +96,32 @@ static NSArray *SupportedFileTypes = nil;
     UIImage *cachedImage = nil;
     __block NSString *cachedFilename = nil;
     
+    BOOL shouldReload = YES;
+    
     if (self.imageCacheInfo[URLString]) {
-        NSURL *url = [self.cacheImagesFolderURL URLByAppendingPathComponent:self.imageCacheInfo[URLString]];
-        NSData *cachedImageData = [NSData dataWithContentsOfURL:url];
-        cachedImage = [UIImage imageWithData:cachedImageData];
-        cachedFilename = self.imageCacheInfo[URLString];
+        BOOL shouldUseCache = YES;
+        
+        NSDate *expirationDate = (NSDate *)self.imageCacheInfo[URLString][ImageCacheItemExpiresKey];
+        if (expirationDate) {
+            NSTimeInterval interval = [expirationDate timeIntervalSinceNow];
+            if (interval < 0) {
+                // do not use the cache if the image has expired
+                shouldUseCache = NO;
+            } else if (interval < 60 * 60 * 24 * 90) {
+                // Only use the cache if the exiration date is reasonable (< 90 days)
+                shouldReload = NO;
+            }
+        }
+    
+        if (shouldUseCache) {
+            cachedFilename = self.imageCacheInfo[URLString][ImageCacheItemFilenameKey];
+            NSURL *url = [self.cacheImagesFolderURL URLByAppendingPathComponent:cachedFilename];
+            NSData *cachedImageData = [NSData dataWithContentsOfURL:url];
+            cachedImage = [UIImage imageWithData:cachedImageData];
+        }
     }
     
-    {
+    if (shouldReload) {
         NSURLRequest *request = [NSURLRequest requestWithURL:imageURL];
                 
         NSOperationQueue *downloadQueue = [[NSOperationQueue alloc] init];
@@ -141,8 +168,16 @@ static NSArray *SupportedFileTypes = nil;
                 NSAssert(success, @"Failed to write image data.");
                 
                 if (success) {
-                    self.imageCacheInfo[URLString] = cachedFilename;
-                    BOOL success = [self.imageCacheInfo writeToURL:[self cacheInfoFileURL] atomically:NO];
+                    NSMutableDictionary *cacheItem = [NSMutableDictionary dictionaryWithCapacity:2];
+                    if (((NSHTTPURLResponse *)response).allHeaderFields[@"Expires"]) {
+                        NSString *dateString = ((NSHTTPURLResponse *)response).allHeaderFields[@"Expires"];
+                        cacheItem[ImageCacheItemExpiresKey] = [_expiresDateFormatter dateFromString:dateString];
+                    }
+                    
+                    cacheItem[ImageCacheItemFilenameKey] = cachedFilename;
+                    
+                    self.imageCacheInfo[URLString] = cacheItem;
+                    BOOL success = [self.imageCacheInfo writeToURL:[self cacheInfoFileURL] atomically:YES];
                     NSAssert(success, @"Failed to write cache info file");
                 }
                 
