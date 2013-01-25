@@ -14,8 +14,7 @@ static NSString * const ImageCacheInfoFilename = @"cacheInfo.plist";
 static NSString * const ImageCacheItemFilenameKey = @"filename";
 static NSString * const ImageCacheItemExpiresKey = @"expires";
 
-static NSArray *_supportedFileTypes = nil;
-static NSDateFormatter *_expiresDateFormatter = nil;
+static NSDateFormatter *m_expiresDateFormatter;
 
 @interface BHImageCache () {
     dispatch_queue_t fileWriteQueue;
@@ -31,7 +30,12 @@ static NSDateFormatter *_expiresDateFormatter = nil;
 
 + (void)initialize
 {
-    _supportedFileTypes = @[@"jpg", @"png"];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        // Sat, 26 Jan 2013 20:29:07 GMT
+        m_expiresDateFormatter = [[NSDateFormatter alloc] init];
+        m_expiresDateFormatter.dateFormat = @"EEE', 'dd' 'MMM' 'yyyy' 'HH':'mm':'ss' 'zzz";
+    });
 }
 
 + (BHImageCache *)sharedCache
@@ -54,10 +58,6 @@ static NSDateFormatter *_expiresDateFormatter = nil;
     if (self) {
         fileWriteQueue = dispatch_queue_create("com.skeuo.imagecache.filewritequeue", NULL);
                 
-        // Sat, 26 Jan 2013 20:29:07 GMT
-        _expiresDateFormatter = [[NSDateFormatter alloc] init];
-        _expiresDateFormatter.dateFormat = @"EEE', 'dd' 'MMM' 'yyyy' 'HH':'mm':'ss' 'zzz";
-        
         [self setup];
     }
     
@@ -69,17 +69,13 @@ static NSDateFormatter *_expiresDateFormatter = nil;
 
 - (UIImage *)imageWithURL:(NSURL *)imageURL operationQueue:(NSOperationQueue *)queue completionBlock:(void (^)(UIImage *image, NSError *error))completionBlock
 {
+    NSAssert(imageURL, @"Invalid image URL");
+    NSAssert(imageURL, @"Invalid operation queue queue");
+    
     NSString *URLString = [imageURL absoluteString];
     
-    NSString *fileType = [[URLString pathExtension] lowercaseString];
-    if (![_supportedFileTypes containsObject:fileType]) {
-        NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:^{
-            NSError *error = [NSError errorWithDomain:@"BHImageCache" code:1 userInfo:@{NSLocalizedDescriptionKey : @"Invalid image file type."}];
-            completionBlock(nil, error);
-        }];
-        [queue addOperation:blockOperation];
-        return nil;
-    }
+    NSString *pathString = [URLString componentsSeparatedByString:@"?"][0];
+    NSString *fileType = [[pathString pathExtension] lowercaseString];
     
     UIImage *cachedImage = nil;
     __block NSString *cachedFilename = nil;
@@ -159,7 +155,7 @@ static NSDateFormatter *_expiresDateFormatter = nil;
                     NSMutableDictionary *cacheItem = [NSMutableDictionary dictionaryWithCapacity:2];
                     if (((NSHTTPURLResponse *)response).allHeaderFields[@"Expires"]) {
                         NSString *dateString = ((NSHTTPURLResponse *)response).allHeaderFields[@"Expires"];
-                        cacheItem[ImageCacheItemExpiresKey] = [_expiresDateFormatter dateFromString:dateString];
+                        cacheItem[ImageCacheItemExpiresKey] = [m_expiresDateFormatter dateFromString:dateString];
                     }
                     
                     cacheItem[ImageCacheItemFilenameKey] = cachedFilename;
