@@ -14,12 +14,11 @@ static NSString * const ImageCacheInfoFilename = @"cacheInfo.plist";
 static NSString * const ImageCacheItemFilenameKey = @"filename";
 static NSString * const ImageCacheItemExpiresKey = @"expires";
 
-static NSDateFormatter *m_expiresDateFormatter;
-
 @interface BHImageCache () {
     dispatch_queue_t fileWriteQueue;
 }
 
+@property (nonatomic, strong) NSDateFormatter *expiresDateFormatter;
 @property NSMutableDictionary *imageCacheInfo;
 
 - (NSURL *)cacheImagesFolderURL;
@@ -27,16 +26,6 @@ static NSDateFormatter *m_expiresDateFormatter;
 @end
 
 @implementation BHImageCache
-
-+ (void)initialize
-{
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        // Sat, 26 Jan 2013 20:29:07 GMT
-        m_expiresDateFormatter = [[NSDateFormatter alloc] init];
-        m_expiresDateFormatter.dateFormat = @"EEE', 'dd' 'MMM' 'yyyy' 'HH':'mm':'ss' 'zzz";
-    });
-}
 
 + (BHImageCache *)sharedCache
 {
@@ -155,7 +144,7 @@ static NSDateFormatter *m_expiresDateFormatter;
                     NSMutableDictionary *cacheItem = [NSMutableDictionary dictionaryWithCapacity:2];
                     if (((NSHTTPURLResponse *)response).allHeaderFields[@"Expires"]) {
                         NSString *dateString = ((NSHTTPURLResponse *)response).allHeaderFields[@"Expires"];
-                        cacheItem[ImageCacheItemExpiresKey] = [m_expiresDateFormatter dateFromString:dateString];
+                        cacheItem[ImageCacheItemExpiresKey] = [self.expiresDateFormatter dateFromString:dateString];
                     }
                     
                     cacheItem[ImageCacheItemFilenameKey] = cachedFilename;
@@ -214,6 +203,9 @@ static NSDateFormatter *m_expiresDateFormatter;
 
 - (void)setup
 {
+    self.expiresDateFormatter = [[NSDateFormatter alloc] init];
+    self.expiresDateFormatter.dateFormat = @"EEE', 'dd' 'MMM' 'yyyy' 'HH':'mm':'ss' 'zzz";
+
     self.imageCacheInfo = [NSMutableDictionary dictionaryWithContentsOfURL:[self cacheInfoFileURL]];
     if (!self.imageCacheInfo) self.imageCacheInfo = [NSMutableDictionary dictionary];
     
