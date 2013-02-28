@@ -14,7 +14,9 @@ static NSString * const ImageCacheInfoFilename = @"cacheInfo.plist";
 static NSString * const ImageCacheItemFilenameKey = @"filename";
 static NSString * const ImageCacheItemExpiresKey = @"expires";
 
-@interface BHImageCache ()
+@interface BHImageCache () {
+    dispatch_queue_t cacheQueue;
+}
 
 @property (nonatomic, strong) NSDateFormatter *expiresDateFormatter;
 @property NSMutableDictionary *imageCacheInfo;
@@ -74,11 +76,16 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
     __block NSString *cachedFilename = nil;
     
     BOOL shouldReload = YES;
+
+    __block NSDictionary *itemInfo = nil;
+    dispatch_sync(cacheQueue, ^(){
+        itemInfo = self.imageCacheInfo[URLString];
+    });
     
-    if (self.imageCacheInfo[URLString]) {
+    if (itemInfo) {
         BOOL shouldUseCache = YES;
         
-        NSDate *expirationDate = (NSDate *)self.imageCacheInfo[URLString][ImageCacheItemExpiresKey];
+        NSDate *expirationDate = (NSDate *)itemInfo[ImageCacheItemExpiresKey];
         if (expirationDate) {
             NSTimeInterval interval = [expirationDate timeIntervalSinceNow];
             if (interval < 0) {
@@ -91,7 +98,7 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
         }
     
         if (shouldUseCache) {
-            cachedFilename = self.imageCacheInfo[URLString][ImageCacheItemFilenameKey];
+            cachedFilename = itemInfo[ImageCacheItemFilenameKey];
             NSURL *url = [self.cacheImagesFolderURL URLByAppendingPathComponent:cachedFilename];
             NSData *cachedImageData = [NSData dataWithContentsOfURL:url];
             cachedImage = [UIImage imageWithData:cachedImageData];
@@ -151,10 +158,12 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
                 }
                 
                 cacheItem[ImageCacheItemFilenameKey] = cachedFilename;
-                
-                self.imageCacheInfo[URLString] = cacheItem;
-                BOOL success = [self.imageCacheInfo writeToURL:[self cacheInfoFileURL] atomically:YES];
-                NSAssert(success, @"Failed to write cache info file");
+
+                dispatch_sync(cacheQueue, ^(){
+                    self.imageCacheInfo[URLString] = cacheItem;
+                    BOOL success = [self.imageCacheInfo writeToURL:[self cacheInfoFileURL] atomically:YES];
+                    NSAssert(success, @"Failed to write cache info file");
+                });
             }
             
             NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:^{
@@ -203,6 +212,8 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
 
 - (void)setup
 {
+    cacheQueue = dispatch_queue_create("com.skeuo.BHImageCache ", NULL);
+
     self.expiresDateFormatter = [[NSDateFormatter alloc] init];
     self.expiresDateFormatter.dateFormat = @"EEE', 'dd' 'MMM' 'yyyy' 'HH':'mm':'ss' 'zzz";
 
