@@ -54,9 +54,17 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
 
 - (UIImage *)imageWithURL:(NSURL *)imageURL operationQueue:(NSOperationQueue *)queue completionBlock:(void (^)(UIImage *image, NSError *error))completionBlock
 {
-    NSAssert(imageURL, @"Invalid image URL");
-    NSAssert(imageURL, @"Invalid operation queue queue");
-    
+    NSAssert(queue, @"Invalid operation queue queue");
+
+    if (!imageURL) {
+        NSError *urlError = [NSError errorWithDomain:@"com.skeuo.BHImageCache" code:-1000 userInfo:nil];
+        NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:^{
+            completionBlock(nil, urlError);
+        }];
+        [queue addOperation:blockOperation];
+        return nil;
+    }
+
     NSString *URLString = [imageURL absoluteString];
     
     NSString *pathString = [URLString componentsSeparatedByString:@"?"][0];
