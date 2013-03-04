@@ -162,7 +162,7 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
                 dispatch_sync(cacheQueue, ^(){
                     self.imageCacheInfo[URLString] = cacheItem;
                     BOOL success = [self.imageCacheInfo writeToURL:[self cacheInfoFileURL] atomically:YES];
-                    NSAssert(success, @"Failed to write cache info file");
+                    if (!success) NSLog(@"Failed to write cache info file");
                 });
             }
             
@@ -226,7 +226,7 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
     if (error) {
         NSError *dirError = nil;
         BOOL success = [[NSFileManager defaultManager] createDirectoryAtURL:folderURL withIntermediateDirectories:NO attributes:nil error:&dirError];
-        NSAssert(success, @"Could not create cache fodler",dirError);
+        if (!success) NSLog(@"Could not create cache folder %@",dirError);
     }
 }
 
