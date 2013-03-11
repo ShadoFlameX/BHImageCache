@@ -68,43 +68,12 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
     }
 
     NSString *URLString = [imageURL absoluteString];
-    
     NSString *pathString = [URLString componentsSeparatedByString:@"?"][0];
-    NSString *fileType = [[pathString pathExtension] lowercaseString];
-    
-    UIImage *cachedImage = nil;
-    __block NSString *cachedFilename = nil;
-    
-    BOOL shouldReload = YES;
 
-    __block NSDictionary *itemInfo = nil;
-    dispatch_sync(cacheQueue, ^(){
-        itemInfo = self.imageCacheInfo[URLString];
-    });
-    
-    if (itemInfo) {
-        BOOL shouldUseCache = YES;
+    __block NSString *cachedFilename = nil;
+    BOOL shouldReload;
+    UIImage *cachedImage = [self cachedImageWithURL:imageURL cachedFilename:&cachedFilename shouldReload:&shouldReload];
         
-        NSDate *expirationDate = (NSDate *)itemInfo[ImageCacheItemExpiresKey];
-        if (expirationDate) {
-            NSTimeInterval interval = [expirationDate timeIntervalSinceNow];
-            if (interval < 0) {
-                // do not use the cache if the image has expired
-                shouldUseCache = NO;
-            } else if (interval < 60 * 60 * 24 * 365) {
-                // Only use the cache if the expiration date is reasonable
-                shouldReload = NO;
-            }
-        }
-    
-        if (shouldUseCache) {
-            cachedFilename = itemInfo[ImageCacheItemFilenameKey];
-            NSURL *url = [self.cacheImagesFolderURL URLByAppendingPathComponent:cachedFilename];
-            NSData *cachedImageData = [NSData dataWithContentsOfURL:url];
-            cachedImage = [UIImage imageWithData:cachedImageData];
-        }
-    }
-    
     if (shouldReload) {
         NSURLRequest *request = [NSURLRequest requestWithURL:imageURL];
                 
@@ -143,6 +112,7 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
             }
             
             if (!cachedFilename.length) {
+                NSString *fileType = [[pathString pathExtension] lowercaseString];
                 cachedFilename = [[[BHImageCache class] UUID] stringByAppendingPathExtension:fileType];
             }
             
@@ -173,6 +143,52 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
         }];
     }
     
+    return cachedImage;
+}
+
+
+#pragma mark - Image Cache
+
+- (UIImage *)cachedImageWithURL:(NSURL *)imageURL
+{
+    BOOL shouldReload;
+    return [self cachedImageWithURL:imageURL cachedFilename:nil shouldReload:&shouldReload];
+}
+
+- (UIImage *)cachedImageWithURL:(NSURL *)imageURL cachedFilename:(NSString **)filename shouldReload:(BOOL *)shouldReload
+{
+    NSString *URLString = [imageURL absoluteString];
+
+    UIImage *cachedImage = nil;
+    __block NSString *cachedFilename = nil;
+
+    *shouldReload = YES;
+
+    __block NSDictionary *itemInfo = nil;
+    dispatch_sync(cacheQueue, ^(){
+        itemInfo = self.imageCacheInfo[URLString];
+    });
+
+    if (itemInfo) {
+        NSDate *expirationDate = (NSDate *)itemInfo[ImageCacheItemExpiresKey];
+        if (expirationDate) {
+            NSTimeInterval interval = [expirationDate timeIntervalSinceNow];
+            if (interval < 0) {
+                // do not use the cache if the image has expired
+                return nil;
+                
+            } else if (interval < 60 * 60 * 24 * 365) {
+                // Only use the cache if the expiration date is reasonable
+                *shouldReload = NO;
+            }
+        }
+
+        cachedFilename = itemInfo[ImageCacheItemFilenameKey];
+        NSURL *url = [self.cacheImagesFolderURL URLByAppendingPathComponent:cachedFilename];
+        NSData *cachedImageData = [NSData dataWithContentsOfURL:url];
+        cachedImage = [UIImage imageWithData:cachedImageData];
+    }
+
     return cachedImage;
 }
 
