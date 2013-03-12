@@ -249,9 +249,9 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
 + (NSString *)UUID
 {
     CFUUIDRef theUUID = CFUUIDCreate(NULL);
-    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+    NSString *string = (__bridge_transfer NSString *)CFUUIDCreateString(NULL, theUUID);
     CFRelease(theUUID);
-    return (__bridge NSString *)string;
+    return string;
 }
 
 @end
