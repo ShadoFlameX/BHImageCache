@@ -12,8 +12,8 @@
 
 + (BHImageCache *)sharedCache;
 
-- (UIImage *)imageWithURL:(NSURL *)imageURL operationQueue:(NSOperationQueue *)queue completionBlock:(void (^)(UIImage *image, NSError *error))completionBlock;
-- (UIImage *)cachedImageWithURL:(NSURL *)imageURL;
+- (UIImage *)imageWithURL:(NSURL *)imageURL scale:(CGFloat)scale operationQueue:(NSOperationQueue *)queue completionBlock:(void (^)(UIImage *image, NSError *error))completionBlock;
+- (UIImage *)cachedImageWithURL:(NSURL *)imageURL scale:(CGFloat)scale;
 
 - (BOOL)clearCache;
 

@@ -54,7 +54,7 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
 
 #pragma mark - Download
 
-- (UIImage *)imageWithURL:(NSURL *)imageURL operationQueue:(NSOperationQueue *)queue completionBlock:(void (^)(UIImage *image, NSError *error))completionBlock
+- (UIImage *)imageWithURL:(NSURL *)imageURL scale:(CGFloat)scale operationQueue:(NSOperationQueue *)queue completionBlock:(void (^)(UIImage *image, NSError *error))completionBlock
 {
     NSAssert(queue, @"Invalid operation queue queue");
 
@@ -72,7 +72,7 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
 
     __block NSString *cachedFilename = nil;
     BOOL shouldReload;
-    UIImage *cachedImage = [self cachedImageWithURL:imageURL cachedFilename:&cachedFilename shouldReload:&shouldReload];
+    UIImage *cachedImage = [self cachedImageWithURL:imageURL scale:scale cachedFilename:&cachedFilename shouldReload:&shouldReload];
         
     if (shouldReload) {
         NSURLRequest *request = [NSURLRequest requestWithURL:imageURL];
@@ -100,7 +100,7 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
                 }
             }
             
-            UIImage *image = [UIImage imageWithData:data];
+            UIImage *image = [UIImage imageWithData:data scale:scale];
             
             if (!image) {
                 NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:^{
@@ -149,13 +149,13 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
 
 #pragma mark - Image Cache
 
-- (UIImage *)cachedImageWithURL:(NSURL *)imageURL
+- (UIImage *)cachedImageWithURL:(NSURL *)imageURL scale:(CGFloat)scale
 {
     BOOL shouldReload;
-    return [self cachedImageWithURL:imageURL cachedFilename:nil shouldReload:&shouldReload];
+    return [self cachedImageWithURL:imageURL scale:scale cachedFilename:nil shouldReload:&shouldReload];
 }
 
-- (UIImage *)cachedImageWithURL:(NSURL *)imageURL cachedFilename:(NSString **)filename shouldReload:(BOOL *)shouldReload
+- (UIImage *)cachedImageWithURL:(NSURL *)imageURL scale:(CGFloat)scale cachedFilename:(NSString **)filename shouldReload:(BOOL *)shouldReload
 {
     NSString *URLString = [imageURL absoluteString];
 
@@ -186,7 +186,7 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
         cachedFilename = itemInfo[ImageCacheItemFilenameKey];
         NSURL *url = [self.cacheImagesFolderURL URLByAppendingPathComponent:cachedFilename];
         NSData *cachedImageData = [NSData dataWithContentsOfURL:url];
-        cachedImage = [UIImage imageWithData:cachedImageData];
+        cachedImage = [UIImage imageWithData:cachedImageData scale:scale];
     }
 
     return cachedImage;
