@@ -237,9 +237,8 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
     if (!self.imageCacheInfo) self.imageCacheInfo = [NSMutableDictionary dictionary];
     
     NSURL *folderURL = [self cacheImagesFolderURL];
-    NSError *error = nil;
-    [folderURL checkResourceIsReachableAndReturnError:&error];
-    if (error) {
+    BOOL result = [folderURL checkResourceIsReachableAndReturnError:nil];
+    if (!result) {
         NSError *dirError = nil;
         BOOL success = [[NSFileManager defaultManager] createDirectoryAtURL:folderURL withIntermediateDirectories:NO attributes:nil error:&dirError];
         if (!success) NSLog(@"Could not create cache folder %@",dirError);
