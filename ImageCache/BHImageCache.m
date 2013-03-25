@@ -8,8 +8,8 @@
 
 #import "BHImageCache.h"
 
-static NSString * const ImageCacheFolder = @"ImageCache";
-static NSString * const ImageCacheInfoFilename = @"cacheInfo.plist";
+static NSString * const ImageCacheFolder = @"BHImageCache";
+static NSString * const ImageCacheInfoFilename = @"bhcacheInfo.plist";
 
 static NSString * const ImageCacheItemFilenameKey = @"filename";
 static NSString * const ImageCacheItemExpiresKey = @"expires";
