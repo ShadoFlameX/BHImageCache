@@ -68,7 +68,7 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
     }
 
     NSString *URLString = [imageURL absoluteString];
-    NSString *pathString = [URLString componentsSeparatedByString:@"?"][0];
+    NSString *pathString = URLString;
 
     __block NSString *cachedFilename = nil;
     BOOL shouldReload;
