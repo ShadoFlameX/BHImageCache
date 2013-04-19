@@ -122,9 +122,9 @@ static NSString * const ImageCacheItemExpiresKey = @"expires";
             
             if (success) {
                 NSMutableDictionary *cacheItem = [NSMutableDictionary dictionaryWithCapacity:2];
-                if (((NSHTTPURLResponse *)response).allHeaderFields[@"Expires"]) {
-                    NSString *dateString = ((NSHTTPURLResponse *)response).allHeaderFields[@"Expires"];
-                    cacheItem[ImageCacheItemExpiresKey] = [self.expiresDateFormatter dateFromString:dateString];
+                NSString *expiration = ((NSHTTPURLResponse *)response).allHeaderFields[@"Expires"];
+                if (expiration.length) {
+                    cacheItem[ImageCacheItemExpiresKey] = [self.expiresDateFormatter dateFromString:expiration];
                 }
                 
                 cacheItem[ImageCacheItemFilenameKey] = cachedFilename;
